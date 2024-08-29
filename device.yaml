@@ -1,0 +1,27 @@
+actions:
+  boot:
+    methods:
+      minimal:
+    connections:
+      - serial
+  deploy:
+    methods:
+      - overlay
+constants:
+  default-shell-prompt: ".*[a-zA-Z0-9_]+@.*# $"
+  spawn_maxread: 4092
+  failure_retry: false
+  shutdown-message: "reboot: Restarting system"
+  posix:
+    line_separator: \n
+    distro: debian
+    tar_flags: --warning no-timestamp
+    lava_test_sh_cmd: /bin/bash
+    lava_test_dir: /lava-%s
+    lava_test_results_part_attr: root_part
+    lava_test_results_dir: /lava-%s
+    lava_test_shell_file: ~/.bashrc
+
+commands:
+  connect: "bash"
+

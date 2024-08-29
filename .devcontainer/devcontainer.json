@@ -1,0 +1,19 @@
+{
+    "name": "elxr-validation",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "workspaceFolder": "/workspaces/elxr-validation",
+    "postCreateCommand": "poetry install",
+    "customizations": {
+        // Configure properties specific to VS Code.
+        "vscode": {
+          // Add the IDs of extensions you want installed when the container is created.
+          "extensions": [
+            "ms-python.python",
+            "ms-python.debugpy",
+            "ms-azuretools.vscode-docker"
+           ]
+        }
+      }
+}

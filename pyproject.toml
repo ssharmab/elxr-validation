@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "exlr-validator"
+version = "0.1.0"
+description = ""
+authors = ["Joey Lorich <joey.lorich@windriver.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pyyaml = "^6.0.2"
+pexpect = "^4.9.0"
+requests = "^2.32.3"
+netifaces = "^0.11.0"
+pytest = "^8.3.2"
+pyudev = "^0.24.3"
+python-magic = "^0.4.27"
+configobj = "^5.0.8"
+guestfs = {url = "https://download.libguestfs.org/python/guestfs-1.40.2.tar.gz"}
+jinja2 = "^3.1.4"
+voluptuous = "^0.15.2"
+pytz = "^2024.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

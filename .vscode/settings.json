@@ -1,0 +1,8 @@
+{
+    "python.autoComplete.extraPaths": [
+        "lava"
+    ],
+    "python.analysis.extraPaths": [
+        "lava"
+    ]
+}
