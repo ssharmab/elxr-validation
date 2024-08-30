@@ -6,7 +6,7 @@ actions:
       - serial
   deploy:
     methods:
-      - overlay
+      - download
 constants:
   default-shell-prompt: ".*[a-zA-Z0-9_]+@.*# $"
   spawn_maxread: 4092
@@ -19,9 +19,12 @@ constants:
     lava_test_sh_cmd: /bin/bash
     lava_test_dir: /lava-%s
     lava_test_results_part_attr: root_part
-    lava_test_results_dir: /lava-%s
+    lava_test_results_dir: /lava-%s/results
     lava_test_shell_file: ~/.bashrc
 
 commands:
-  connect: "bash"
+  connect: bash
+  hard_reset: "bash -c exit"
+  power_off: "bash -c exit"
+  power_on: ":"
 

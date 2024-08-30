@@ -11,10 +11,8 @@ timeouts:
     minutes: 2
 priority: medium
 visibility: public
-
 context:
   arch: amd64
-
 
 # ACTION_BLOCK
 actions:
@@ -24,12 +22,13 @@ actions:
     reset: false
 
 - deploy:
-    to: overlay
-    overlays:
-      lava:
-        compression: sss
-        path: /tmp/lava
-
+    to: download
+    images:
+      tests:
+        format: tar
+        url: file:///workspaces/elxr-validation/README.md
+        overlays:
+          lava: true
 - test:
     timeout:
       minutes: 5
