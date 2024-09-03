@@ -1,0 +1,107 @@
+#!/bin/bash
+
+set -e
+
+# Neither run with sudo
+if [ -n "${SUDO_USER}" ]; then
+    echo "./ci-run should NOT be run using ``sudo``"
+    # root is ok but only if root did the git clone
+    exit 3
+fi
+
+# Parse command line
+while getopts ":bcdopst" opt; do
+  case $opt in
+    b)
+      # run black
+      BLACK=true
+      ;;
+    c)
+      # clean only
+      CLEAN=true
+      ;;
+    d)
+      # lava_dispatcher
+      DISPATCH=true
+      ;;
+    o)
+      # lava_common
+      COMMON=true
+      ;;
+    s)
+      # lava_server
+      SERVER=true
+      ;;
+    t)
+      # template tests only
+      TEMPLATE=true
+      ;;
+
+    *)
+      echo "Usage:"
+      echo "-c - clean targets only"
+      echo "-b - run black"
+      echo "-d - test dispatcher"
+      echo "-o - test common"
+      echo "-s - test server"
+      echo "-t - test templates"
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+  esac
+done
+
+shift $((OPTIND -1))
+
+if [ -z "${BLACK}" ] && [ -z "${CLEAN}" ] && [ -z "${DISPATCH}" ] && [ -z "${COMMON}" ] && [ -z "${SERVER}" ] && [ -z "${TEMPLATE}" ]
+then
+    BLACK=true
+    COMMON=true
+    DISPATCH=true
+    SERVER=true
+fi
+
+echo "Removing old .pyc files and cache"
+echo
+find . -name '*.pyc' -delete
+rm -rf ./.cache/
+rm -rf ./__init__.py
+rm -rf lava.egg-info/
+rm -rf .pytest_cache/
+find . -name __pycache__ -exec rmdir "{}" \; 2>/dev/null || true
+[ -n "${CLEAN}" ] && exit 0
+
+if [ "${BLACK}" ]
+then
+    echo "Calling black"
+    echo
+    .gitlab-ci/analyze/black.sh
+fi
+
+if [ -n "${TEMPLATE}" ]
+then
+    echo "Testing templates"
+    echo
+    PYTHONPATH=. pytest-3 --cache-clear -v tests/lava_scheduler_app/test_base_templates.py tests/lava_scheduler_app/test_templates.py tests/lava_scheduler_app/test_barebox_templates.py tests/lava_scheduler_app/test_uboot_templates.py tests/lava_dispatcher/test_uboot_dfu.py tests/lava_scheduler_app/test_fastboot_templates.py tests/lava_scheduler_app/test_grub_templates.py tests/lava_scheduler_app/test_qemu_templates.py
+fi
+
+if [ -n "${COMMON}" ]
+then
+    echo "Testing common"
+    echo
+    PYTHONPATH=. pytest-3 --cache-clear -v tests/lava_common
+fi
+
+if [ -n "${DISPATCH}" ]
+then
+    echo "Testing dispatcher"
+    echo
+    PYTHONPATH=. pytest-3 --cache-clear -v tests/lava_dispatcher tests/lava_dispatcher_host tests/lava_coordinator
+fi
+
+if [ -n "${SERVER}" ]
+then
+    echo "Testing server"
+    echo
+    pytest-3 --cache-clear -v --reuse-db tests/lava_scheduler_app tests/lava_results_app tests/linaro_django_xmlrpc tests/lava_rest_app tests/lava_server
+fi

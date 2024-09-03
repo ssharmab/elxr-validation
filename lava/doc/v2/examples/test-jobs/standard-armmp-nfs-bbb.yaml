@@ -1,0 +1,65 @@
+device_type: beaglebone-black
+
+# NFS fails on arndale.
+
+job_name: standard Debian ARMMP nfs test on bbb
+timeouts:
+  job:
+    minutes: 15
+  action:
+    minutes: 5
+  connection:
+    minutes: 2
+priority: medium
+visibility: public
+
+actions:
+# DEPLOY_BLOCK
+- deploy:
+    timeout:
+      minutes: 10
+    to: tftp
+    kernel:
+      url: http://example.com/vmlinuz-4.9.0-4-armmp
+      type: zimage
+    ramdisk:
+      url: http://example.com/initrd.img-4.9.0-4-armmp.gz
+      compression: gz
+    modules:
+      url: http://example.com/modules.tar.gz
+      compression: gz
+    nfsrootfs:
+      url: http://example.com/stretch-armhf-nfs.tar.gz
+      compression: gz
+    dtb:
+      url: http://example.com/dtbs/am335x-boneblack.dtb
+
+# BOOT_BLOCK
+- boot:
+    method: u-boot
+    commands: nfs
+    auto_login:
+      login_prompt: 'login:'
+      username: root
+    prompts:
+    - 'root@stretch:'
+    timeout:
+      minutes: 2
+
+# TEST_BLOCK
+- test:
+    timeout:
+      minutes: 10
+    definitions:
+    - repository: http://git.linaro.org/lava-team/lava-functional-tests.git
+      from: git
+      path: lava-test-shell/smoke-tests-basic.yaml
+      name: smoke-tests
+    - from: git
+      repository: http://git.linaro.org/lava-team/lava-functional-tests.git
+      path: lava-test-shell/params/nfs.yaml
+      name: nfs-dns
+    - from: git
+      repository: http://git.linaro.org/lava-team/lava-functional-tests.git
+      path: lava-test-shell/single-node/singlenode02.yaml
+      name: singlenode-intermediate

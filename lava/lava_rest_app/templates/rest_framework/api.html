@@ -1,0 +1,57 @@
+{% extends "rest_framework/base.html" %}
+{% load static %}
+
+{% block title %}API{% endblock %}
+
+{% block bootstrap_theme %}
+  <link rel="icon" type="image/png" href="{% static "lava_server/images/logo.png" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static "lava_server/css/bootstrap-3.4.1.css" %}">
+  <style>
+    body {
+      padding-top: 60px;
+      margin-bottom: 100px;
+    }
+    html {
+      position: relative;
+      min-height: 100%;
+    }
+    #footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      /* Set the fixed height of the footer here */
+      height: 100px;
+      background-color: #f5f5f5;
+    }
+    #footer > .container {
+      padding-top: 15px;
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+  </style>
+{% endblock %}
+
+{% block navbar %}
+  {% include 'layouts/_navbar.html' %}
+{% endblock %}
+
+{% block breadcrumbs %}
+  <ul class="breadcrumb">
+        <li><a href="{% url 'lava.home' %}">LAVA</a></li>
+    {% for breadcrumb_name, breadcrumb_url in breadcrumblist %}
+      {% if forloop.last %}
+        <li class="active"><a href="{{ breadcrumb_url }}">{{ breadcrumb_name }}</a></li>
+      {% else %}
+        <li><a href="{{ breadcrumb_url }}">{{ breadcrumb_name }}</a></li>
+      {% endif %}
+    {% empty %}
+      {% block breadcrumbs_empty %}&nbsp;{% endblock breadcrumbs_empty %}
+    {% endfor %}
+  </ul>
+{% endblock %}
+
+{% block script %}
+{% include 'layouts/_footer.html' %}
+
+{{ block.super }}
+{% endblock script %}

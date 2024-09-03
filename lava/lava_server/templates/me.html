@@ -1,0 +1,215 @@
+{% extends "layouts/content.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<h2>Hi {% firstof user.first_name user.username %}</h2>
+<div class="row">
+  <div class="col-md-6">
+    <h4 class="modal-header">Personal information</h4>
+    <dl class="dl-horizontal">
+      <dt>Full name</dt>
+      <dd>{{ user.get_full_name|default:"??" }}</dd>
+      <dt>Username</dt>
+      <dd>{{ user.username }}</dd>
+      <dt>Email</dt>
+      <dd>{{ user.email|default:"??" }}</dd>
+      <dt>Joined</dt>
+      <dd><span title="{{ user.date_joined }}">
+          {{user.date_joined|timesince }} ago</span></dd>
+      <dt>Password</dt>
+      <dd><a href="{% url 'password_change' %}"><span class="glyphicon glyphicon-lock"></span> Update</a></dd>
+      {% if socialaccount_enabled %}
+      <dt>Social accounts</dt>
+      <dd><a href="{% url 'socialaccount_connections' %}"><span class="glyphicon glyphicon-link"></span> Manage connections</a></dd>
+      {% endif %}
+      <dt>IRC settings</dt>
+      <dd>Server: {{ user.extendeduser.irc_server|default:"None" }}; Handle: {{ user.extendeduser.irc_handle|default:"None" }};<a data-toggle="modal" href="#irc_modal"> Update</a></dd>
+      <dt>Default table length</dt>
+      <dd>{{ user.extendeduser.table_length|default:"System default" }} <a data-toggle="modal" href="#table_length_modal">Update</a></dd>
+    </dl>
+  </div>
+
+  <!-- Modal HTML -->
+  <div id="irc_modal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Update IRC settings</h4>
+        </div>
+        <form id="irc_form" method="post" action="{% url 'lava.update_irc_settings' %}">
+	  {% csrf_token %}
+        <div class="modal-body well">
+	  <div class="errorlist" style="color: red;"></div>
+	    {{ irc_form.as_p }}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <input class="btn btn-primary" type="submit" value="Save">
+        </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal HTML -->
+  <div id="table_length_modal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Update table length setting</h4>
+        </div>
+        <form id="table_length_form" method="post" action="{% url 'lava.update_table_length_setting' %}">
+	  {% csrf_token %}
+        <div class="modal-body well">
+	  <div class="errorlist" style="color: red;"></div>
+	    {{ table_length_form.as_p }}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <input class="btn btn-primary" type="submit" value="Save">
+        </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <h4 class="modal-header">Groups</h4>
+  {% with groups=user.groups.all %}
+    {% if groups %}
+    <p>You are member of the following LAVA groups:</p>
+    <div class="panel-group">
+    {% for group in groups %}
+      {% with user_set=group.user_set.all %}
+        {% with users_count=user_set|length %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            {% if users_count > 1 %}
+              <a data-toggle="collapse" data-parent="#accordion" href="#collapse-{{ forloop.counter }}">{{ group.name }} <span class="badge pull-right">{{ users_count|add:"-1" }}</span></a>
+            {% else %}
+              {{ group.name }} <span class="badge pull-right">0</span>
+            {% endif %}
+          </h4>
+        </div>
+        {% if users_count > 1 %}
+        <div id="collapse-{{ forloop.counter }}" class="panel-collapse collapse">
+          <div class="panel-body">
+            <ul>
+            {% for group_user in user_set|dictsort:"first_name"|dictsort:"last_name" %}
+              {% if group_user != user %}<li>{{ group_user.get_full_name|default:group_user.username }}</li>{% endif %}
+            {% endfor %}
+            </ul>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+        {% endwith %}
+      {% endwith %}
+    {% endfor %}
+    </div>
+    {% else %}
+    <p><i>You are not member of any group.</i></p>
+    {% endif %}
+  {% endwith %}
+  </div>
+
+
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <h4 class="modal-header">Personal reports</h4>
+    <ul class="nav nav-pills nav-stacked">
+      <li>
+        <a href="{% url 'lava.scheduler.myjobs' %}">
+          <span class="glyphicon glyphicon-tasks pull-right"></span> Your jobs</a>
+      </li>
+      <li>
+        <a href="{% url 'lava.scheduler.mydevice_list' %}">
+          <span class="glyphicon glyphicon-phone pull-right"></span> Your devices</a>
+      </li>
+      <li>
+        <a href="{% url 'lava.scheduler.mydevices_health_history_log' %}">
+          <span class="glyphicon glyphicon-heart pull-right"></span> Your devices health</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="col-md-6">
+    <h4 class="modal-header">Remote artifact tokens <small><a data-toggle="modal" href="#token_modal" class="btn btn-xs btn-info empty-token-modal"><span class="glyphicon glyphicon-plus-sign"></span> Create</a></small></h4>
+    {% with tokens=user.remoteartifactsauth_set.all %}
+    {% if tokens %}
+    <p>You have following tokens:</p>
+    <div class="panel-group">
+      {% for token_obj in tokens %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="modal" data-id="{{ token_obj.id }}" data-name="{{ token_obj.name }}" data-token="{{ token_obj.token }}" href="#token_modal" class="open-token-modal"><span>{{ token_obj.name }}</span></a>
+            <a class="btn btn-xs btn-danger pull-right" style="color: #fff" title="Delete token" href="{% url 'lava.delete_remote_auth' token_obj.id %}" data-toggle="confirm" data-title="Are you sure you want to delete this token?">
+              <span class="glyphicon glyphicon-trash"></span>
+            </a>
+          </h4>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+    {% else %}
+    <p><i>You have no tokens.</i></p>
+    {% endif %}
+  {% endwith %}
+  </div>
+
+  <!-- Modal HTML -->
+  <div id="token_modal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Add/Update token</h4>
+        </div>
+        <form id="token_form" method="post" action="{% url 'lava.update_remote_auth' %}">
+	  {% csrf_token %}
+        <div class="modal-body well">
+	  <div id="token_errors" class="errorlist" style="color: red;"></div>
+          <p><label for="id_name">Token name:</label> <input type="text" name="name" maxlength="100" id="id_name"><input type="hidden" name="id" id="id_id"></p>
+          <p><label for="id_token">Token string:</label> <input type="text" name="token" maxlength="100" id="id_token">
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <input class="btn btn-primary" type="submit" value="Save">
+        </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'lava_server/js/bootbox.js' %}"></script>
+<script src="{% static 'lava_results_app/js/bootbox.data.toggle.js' %}"></script>
+<script>
+$(document).ready(function () {
+    add_bootbox_data_toggle();
+    $(document).on("click", ".open-token-modal", function () {
+        $(".modal-body #id_id").val($(this).data('id'));
+        $(".modal-body #id_name").val($(this).data('name'));
+        $(".modal-body #id_token").val($(this).data('token'));
+    }).on("click", ".empty-token-modal", function () {
+        $(".modal-body #id_id").val("");
+        $(".modal-body #id_name").val("");
+        $(".modal-body #id_token").val("");
+    });
+});
+</script>
+{% endblock %}

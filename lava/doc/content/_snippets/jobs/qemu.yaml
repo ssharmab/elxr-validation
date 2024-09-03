@@ -1,0 +1,48 @@
+device_type: qemu
+job_name: simple qemu job
+
+timeouts:
+  job:
+    minutes: 20
+priority: medium
+visibility: public
+
+context:
+  arch: amd64
+
+actions:
+- deploy:
+    to: tmpfs
+    timeout:
+      minutes: 20
+    images:
+      rootfs:
+        url: http://images.validation.linaro.org/kvm/debian-sid-2014_08_21-amd64.qcow2.xz
+        image_arg: -drive format=qcow2,file={rootfs}
+        format: qcow2
+        compression: xz
+    os: debian
+
+- boot:
+    method: qemu
+    media: tmpfs
+    timeout:
+      minutes: 5
+    prompts:
+    - 'root@debian:~#'
+    auto_login:
+      login_prompt: "login:"
+      username: root
+
+- test:
+    timeout:
+      minutes: 5
+    definitions:
+    - repository: https://github.com/Linaro/test-definitions
+      from: git
+      path: automated/linux/smoke/smoke.yaml
+      name: smoke-tests
+    - repository: https://github.com/Linaro/test-definitions
+      from: git
+      path: automated/linux/meminfo/meminfo.yaml
+      name: meminfo

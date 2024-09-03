@@ -1,0 +1,74 @@
+# Standard Stretch amd64 JOB definition for QEMU
+device_type: qemu
+job_name: qemu amd64 standard build, Debian Stretch
+
+timeouts:
+  job:
+    minutes: 10
+  action:
+    minutes: 2
+  connection:
+    minutes: 2
+priority: medium
+visibility: public
+
+metadata:
+  source: https://git.lavasoftware.org/lava/lava
+  path: doc/v2/examples/test-jobs/qemu-amd64-standard-stretch.yaml
+
+# CONTEXT_BLOCK
+context:
+  arch: amd64
+  # comment out or change to user if the dispatcher does not support bridging.
+  netdevice: tap
+
+# ACTIONS_BLOCK
+actions:
+# DEPLOY_BLOCK
+- deploy:
+    timeout:
+      minutes: 4
+    to: tmpfs
+    images:
+        rootfs:
+          image_arg: -drive format=raw,file={rootfs}
+          url: http://example.com/stretch.img.gz
+          sha256sum: b5cdb3b9e65fec2d3654a05dcdf507281f408b624535b33375170d1e852b982c
+          compression: gz
+
+# BOOT_BLOCK
+- boot:
+    method: qemu
+    media: tmpfs
+    timeout:
+      minutes: 2
+    prompts:
+    - "root@debian:"
+    auto_login:
+      login_prompt: "login:"
+      username: root
+
+# TEST_BLOCK
+- test:
+    timeout:
+      minutes: 5
+    definitions:
+    - repository:
+        metadata:
+          format: Lava-Test Test Definition 1.0
+          name: smoke-tests-basic
+          description: "Basic system test command for Debian images"
+        run:
+          steps:
+          - printenv
+      from: inline
+      name: env-dut-inline
+      path: inline/env-dut.yaml
+    - repository: http://git.linaro.org/lava-team/lava-functional-tests.git
+      from: git
+      path: lava-test-shell/smoke-tests-basic.yaml
+      name: smoke-tests
+    - repository: http://git.linaro.org/lava-team/lava-functional-tests.git
+      from: git
+      path: lava-test-shell/single-node/singlenode03.yaml
+      name: singlenode-advanced
