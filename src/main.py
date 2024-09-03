@@ -65,6 +65,8 @@ class Validator:
         job.validate()
         job.run()
         print(self._results)
+        if all(map(lambda x : x['result'] == 'pass', self._results)):
+            print("SUCCESSFULLY VALIDATED")
 
 validator = Validator()
 validator.validate('job.yaml', "device.yaml")

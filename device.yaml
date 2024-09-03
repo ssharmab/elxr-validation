@@ -8,9 +8,12 @@ actions:
     methods:
       - download
       - overlay
+
+character_delays:
+  test: 0
 constants:
   default-shell-prompt: ".*[a-zA-Z0-9_]+@.*# $"
-  spawn_maxread: 4092
+  spawn_maxread: 2046
   failure_retry: false
   shutdown-message: "reboot: Restarting system"
   kernel-start-message:
