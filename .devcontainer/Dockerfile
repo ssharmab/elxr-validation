@@ -1,12 +1,16 @@
-FROM python:3.12-bookworm
-RUN apt-get update
-RUN apt-get install -y \
+FROM debian:latest AS elxr-container
+RUN apt update
+RUN apt install -y \ 
     git \
     python3-guestfs \
-    libguestfs-tools
-RUN pip install pipx
-RUN pipx install poetry
-RUN ln -s /root/.local/bin/poetry /usr/local/bin/poetry
+    libguestfs-tools \
+    libguestfs-dev \
+    vim \
+    pipenv \
+    curl wget net-tools \
+    pipenv \
+    python-is-python3
+RUN apt install -y python3-poetry
 
 
 

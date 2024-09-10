@@ -1,7 +1,0 @@
-#!/bin/sh
-#
-#Prints the ip address of the current device.
-#
-#Usage: ``lava-target-ip``
-
-echo "${TARGET_DEVICE_IP}"

@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: /scheduler/
-Disallow: /results/
-Disallow: /api/

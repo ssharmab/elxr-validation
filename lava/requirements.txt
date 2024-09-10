@@ -1,2 +1,0 @@
-# DO NOT EDIT
-# content is managed via ./share/requires.py

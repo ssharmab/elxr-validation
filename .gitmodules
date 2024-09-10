@@ -1,0 +1,3 @@
+[submodule "elxr_validator/inline"]
+	path = elxr_validator/inline
+	url = git@github.com:ssharmab/lava-tests.git

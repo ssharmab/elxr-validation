@@ -1,9 +1,0 @@
-signal ()
-{
-  if [ -z ${KMSG} ]
-  then
-    echo "${1}"
-  else
-    echo "<0>${1}" > /dev/kmsg
-  fi
-}

@@ -1,0 +1,14 @@
+{% extends "layouts/content.html" %}
+{% load django_tables2 %}
+{% load static %}
+
+{% block content %}
+<h2>Devices owned by {{ user.username }}</h2>
+
+{% render_table my_device_table %}
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static "lava_scheduler_app/js/tables.js" %}"></script>
+{% endblock %}

@@ -1,4 +1,0 @@
-# Configuration for lava-coordinator daemon
-
-# Logging level should be uppercase (DEBUG, INFO, WARN, ERROR)
-# LOGLEVEL="DEBUG"

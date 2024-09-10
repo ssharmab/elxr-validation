@@ -1,0 +1,53 @@
+{% extends 'base.jinja2' %}
+
+{% set console_device = console_device | default('ttyS0') %}
+{% set baud_rate = baud_rate | default(115200) %}
+{% set kernel_args = [base_kernel_args, extra_kernel_args] | join(" ") %}
+
+{% set base_depthcharge_commands = depthcharge_tftp_commands | default(
+"          - tftpboot {SERVER_IP} {DEPTHCHARGE_KERNEL} {CMDLINE} {DEPTHCHARGE_RAMDISK}
+") -%}
+
+{% block vland %}
+{{ super() }}
+  load_address: '{{ fit_kernel_load_address | default('0') }}'
+{% endblock vland %}
+
+{% block body %}
+
+actions:
+  deploy:
+{% if mkimage_fit_arch %}
+    parameters:
+      mkimage_arch: {{ mkimage_fit_arch }}
+{% endif %}
+    methods:
+{% if flasher_deploy_commands %}
+      flasher:
+        commands: {{ flasher_deploy_commands }}
+{% endif %}
+      tftp:
+    connections:
+      serial:
+  boot:
+    connections:
+      serial:
+    methods:
+      minimal:
+      depthcharge:
+        parameters:
+          start_message: {{ start_message | default('Starting netboot') }}
+          bootloader_prompt: "{{ bootloader_prompt | default('dpch:') }}"
+        nfs:
+          cmdline: {{ kernel_args }} console={{ console_device }},{{ baud_rate }}n8 root=/dev/nfs rw {{ base_nfsroot_args }} {{ base_ip_args }}
+          commands:
+{{ base_depthcharge_commands }}
+        ramdisk:
+          cmdline: {{ kernel_args }} console={{ console_device }},{{ baud_rate }}n8 root=/dev/ram0 {{ base_ip_args }}
+          commands:
+{{ base_depthcharge_commands }}
+        emmc:
+          cmdline: console={{ console_device }},{{ baud_rate }}n8 {{ base_ip_args }} {{ kernel_args }}
+          commands:
+{{ base_depthcharge_commands }}
+{% endblock body %}

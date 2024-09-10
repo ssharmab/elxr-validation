@@ -1,0 +1,46 @@
+debian:
+  - python_dir: debian/lava-server/usr/lib/python3/dist-packages/
+  - package: libjs-bootstrap
+    directory: /usr/share/javascript/bootstrap/js/
+    lava_directory: lava_server/static/lava_server/js/
+    replacements:
+      # our name first, external name second
+      bootstrap-3.4.1.js: bootstrap.js
+    version: '3.4.1'
+  - package: libjs-bootstrap
+    directory: /usr/share/javascript/bootstrap/css/
+    lava_directory: lava_server/static/lava_server/css/
+    replacements:
+      bootstrap-3.4.1.css: bootstrap.css
+    version: '3.4.1'
+  - package: libjs-jquery
+    directory: /usr/share/javascript/jquery/
+    lava_directory: lava_server/static/lava_server/js/
+    replacements:
+      jquery-3.6.1.js: jquery.js
+    version: '3.6.1'
+  - package: libjs-jquery-flot
+    directory: /usr/share/javascript/jquery-flot/
+    lava_directory: lava_results_app/static/lava_results_app/js/
+    replacements:
+      jquery.flot.navigate.js: jquery.flot.navigate.js
+      jquery.flot.canvas.js: jquery.flot.canvas.js
+      jquery.flot.time.js: jquery.flot.time.js
+      jquery.flot.js: jquery.flot.js
+  - package: libjs-jquery-flot
+    directory: /usr/share/javascript/jquery-flot/
+    lava_directory: lava_scheduler_app/static/lava_scheduler_app/js/
+    replacements:
+      jquery.flot.js: jquery.flot.js
+  - package: libjs-jquery-typeahead
+    directory: /usr/share/javascript/jquery-typeahead/
+    lava_directory: lava_server/static/lava_server/js/
+    replacements:
+      jquery.typeahead.js: jquery.typeahead.js
+    version: '2.10.4'
+  - package: libjs-jquery-typeahead
+    directory: /usr/share/javascript/jquery-typeahead/
+    lava_directory: lava_server/static/lava_server/css/
+    replacements:
+      jquery.typeahead.css: jquery.typeahead.css
+    version: '2.10.4'

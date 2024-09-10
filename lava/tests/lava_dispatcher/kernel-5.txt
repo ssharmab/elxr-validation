@@ -1,2 +1,0 @@
-booti 0x84000000 0x88300000 0x88000000
-Bad Linux RISCV Image magic!

@@ -1,0 +1,20 @@
+{% extends "layouts/content.html" %}
+{% load django_tables2 %}
+{% load static %}
+
+{% block content %}
+{% if device %}
+<h2>Failure Report <small>(device <a href="{% url 'lava.scheduler.device.detail' device %}">{{ device }}</a>)</small></h2>
+{% elif device_type %}
+<h2>Failure Report <small>(type <a href="{% url 'lava.scheduler.device_type.detail' device_type %}">{{ device_type }}</a>)</small></h2>
+{% else %}
+<h2>Failure Report</h2>
+{% endif %}
+<br/>
+{% render_table failed_job_table %}
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static "lava_scheduler_app/js/tables.js" %}"></script>
+{% endblock %}

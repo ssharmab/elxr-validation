@@ -1,3 +1,0 @@
-*[DUT]: Device Under Test
-*[FAQ]: Frequent Asked Questions
-*[Golden image]: Known good image (kernel, dtb, ramdisk, rootfs)
