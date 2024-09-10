@@ -1,4 +1,4 @@
-FROM debian:latest AS elxr-container
+FROM python:3.11-bookworm AS elxr-container
 RUN apt update
 RUN apt install -y \ 
     git \
@@ -8,11 +8,9 @@ RUN apt install -y \
     vim \
     pipenv \
     curl wget net-tools \
-    pipenv \
     python-is-python3
-RUN apt install -y python3-poetry
-
-
-
-
-
+RUN pip install pipx
+RUN pip install --upgrade pip
+RUN pipx install poetry
+RUN ln -s /root/.local/bin/poetry /usr/local/bin/poetry
+WORKDIR /workspaces/elxr-validation
