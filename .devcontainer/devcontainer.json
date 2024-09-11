@@ -4,7 +4,7 @@
         "dockerfile": "Dockerfile"
     },
     "workspaceFolder": "/workspaces/elxr-validation",
-    "postCreateCommand": "echo 'Container Created' && poetry build && pip install dist/*.whl",
+    "postCreateCommand": "echo 'Container Created' && poetry build && poetry install && pip install dist/*.whl",
     "customizations": {
         // Configure properties specific to VS Code.
         "vscode": {
