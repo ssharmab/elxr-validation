@@ -35,7 +35,7 @@ actions:
     timeout:
       minutes: 5
     definitions:
-    - repository: inline
+    - repository: ./inline
       from: git
       path: automated/linux/smoke/smoke.yaml
       name: smoke-tests
