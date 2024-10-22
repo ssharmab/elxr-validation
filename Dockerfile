@@ -8,8 +8,8 @@ RUN apt install -y \
     vim \
     pipenv \
     curl wget net-tools \
-    python-is-python3
-
+    python-is-python3 \
+    bc
 RUN pip install pipx
 RUN pip install --upgrade pip
 RUN pipx install poetry

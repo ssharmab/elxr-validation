@@ -2,6 +2,9 @@ import os
 import sys
 import logging
 import uuid
+import yaml
+import re
+from prettytable import PrettyTable # type: ignore
 
 # Add lava to python path
 sys.path.append(os.path.join(os.path.dirname(__file__), "../lava"))
@@ -64,6 +67,22 @@ class Validator:
         
         job.validate()
         job.run()
+        print(yaml.dump(self._results))
+        table = PrettyTable()
+        summary = PrettyTable()
+        table.field_names = ['Definition','Case','result','starttc','endtc']
+        summary.field_names = ['Definition','Case','result','duration']
+        
+        for element in self._results:
+            if re.match(r"(\d+)_*",element['case']):
+                summary.add_row([element['case'],element['definition'],element['result'],element['duration']])
+        print(summary)
+                
+        for element in self._results:
+            if element['definition'] != 'lava':
+                table.add_row([element['case'],element['definition'],element['result'],element['starttc'],element['endtc']])
+            
+        print(table)
         print(self._results)
         if all(map(lambda x : x['result'] == 'pass', self._results)):
             print("SUCCESSFULLY VALIDATED")

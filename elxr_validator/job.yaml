@@ -39,4 +39,51 @@ actions:
       from: git
       path: automated/linux/smoke/smoke.yaml
       name: smoke-tests
-    
+    - repository: ./inline
+      from: git
+      path: automated/linux/cyclictest/cyclictest.yaml
+      name: cyclictest
+    - repository: ./inline
+      from: git
+      path: automated/linux/device-tree/device-tree.yaml
+      name: device-tree
+    - repository: ./inline
+      from: git
+      path: automated/linux/ethernet/ethernet.yaml
+      name: ethernet
+    - repository: ./inline
+      from: git
+      path: automated/linux/fdisk/fdisk.yaml
+      name: fdisk
+    - repository: ./inline
+      from: git
+      path: automated/linux/fs-resize/fs-resize.yaml
+      name: fs-resize
+    - repository: ./inline
+      from: git
+      path: automated/linux/gpiod/gpiod.yaml
+      name: gpiod
+    - repository: ./inline
+      from: git
+      path: automated/linux/isolate-task/isolate-task.yaml
+      name: isolate-task
+    - repository: ./inline
+      from: git
+      path: automated/linux/kselftest/kselftest.yaml
+      name: kselftest
+    - repository: ./inline
+      from: git
+      path: automated/linux/libhugetlbfs/libhugetlbfs.yaml
+      name: libhugetlbfs
+    - repository: ./inline
+      from: git
+      path: automated/linux/modules/modules.yaml
+      name: modules
+    - repository: ./inline
+      from: git
+      path: automated/linux/network-basic/network-basic.yaml
+      name: network-basic
+    - repository: ./inline
+      from: git
+      path: automated/linux/ptsematest/ptsematest.yaml
+      name: ptsematest
