@@ -3,7 +3,7 @@ name = "elxr-validator"
 version = "0.1.0"
 description = ""
 authors = ["Joey Lorich <joey.lorich@windriver.com>",
-           "Shrikumar Sharma <shrikumar.sharma@windriver.com>]
+           "Shrikumar Sharma <shrikumar.sharma@windriver.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
